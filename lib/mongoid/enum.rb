@@ -43,7 +43,7 @@ module Mongoid
       def create_validations(field_name, values, options)
         if options[:multiple] && options[:validate]
           validates field_name, :'mongoid/enum/validators/multiple' => { :in => values, :allow_nil => !options[:required] }
-        elsif validate
+        elsif options[:validate]
           validates field_name, :inclusion => {:in => values}, :allow_nil => !options[:required]
         end
       end
