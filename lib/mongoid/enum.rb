@@ -69,7 +69,7 @@ module Mongoid
       end
 
       def define_array_field_accessor(name, field_name)
-        class_eval "def #{name}=(vals) self.write_attribute(:#{field_name}, Array(vals).compact.map(&:to_sym)) end"
+        class_eval "def #{name}=(vals) self.write_attribute(:#{field_name}, Array(vals).reject(&:empty?).compact.map(&:to_sym)) end"
         class_eval "def #{name}() self.read_attribute(:#{field_name}) end"
       end
 
