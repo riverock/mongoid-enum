@@ -43,8 +43,7 @@ module Mongoid
       def create_validations(field_name, values, options)
         if options[:multiple] && options[:validate]
           validates field_name, :'mongoid/enum/validators/multiple' => { :in => values.map(&:to_sym), :allow_nil => !options[:required] }
-        #FIXME: Shouldn't this be `elsif options[:validate]` ???
-        elsif validate
+        elsif options[:validate]
           validates field_name, :inclusion => {:in => values.map(&:to_sym)}, :allow_nil => !options[:required]
         end
       end
@@ -70,7 +69,7 @@ module Mongoid
       end
 
       def define_array_field_accessor(name, field_name)
-        class_eval "def #{name}=(vals) self.write_attribute(:#{field_name}, Array(vals).compact.map(&:to_sym)) end"
+        class_eval "def #{name}=(vals) self.write_attribute(:#{field_name}, Array(vals).reject(&:empty?).compact.map(&:to_sym)) end"
         class_eval "def #{name}() self.read_attribute(:#{field_name}) end"
       end
 
